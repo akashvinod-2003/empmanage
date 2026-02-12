@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="page-header">
+    <div>
+        <h1>Payslip detail</h1>
+        <p>AI insight based on attendance-approved records.</p>
+    </div>
+    <a class="ghost" href="{% url 'payslip_list' %}">Back</a>
+</section>
+
+<div class="grid">
+    <div class="card">
+        <h3>Employee</h3>
+        <p class="metric">{{ record.employee.get_full_name|default:record.employee.username }}</p>
+        <p class="muted">Month: {{ record.month }}</p>
+    </div>
+    <div class="card">
+        <h3>Base salary</h3>
+        <p class="metric">{{ record.base_salary }}</p>
+        <p class="muted">Before attendance deductions.</p>
+    </div>
+    <div class="card">
+        <h3>Final salary</h3>
+        <p class="metric">{{ record.final_salary }}</p>
+        <p class="muted">Approved attendance applied.</p>
+    </div>
+</div>
+
+<section class="panel">
+    <h2>Attendance impact</h2>
+    <div class="grid">
+        <div class="card">
+            <h3>Absent days</h3>
+            <p class="metric">{{ record.absent_days }}</p>
+            <p class="muted">Full-day deductions.</p>
+        </div>
+        <div class="card">
+            <h3>Late days</h3>
+            <p class="metric">{{ record.late_days }}</p>
+            <p class="muted">Half-day deductions.</p>
+        </div>
+        <div class="card">
+            <h3>Deduction total</h3>
+            <p class="metric">{{ ai.deduction }}</p>
+            <p class="muted">{{ ai.deduction_rate|floatformat:1 }}% of base pay.</p>
+        </div>
+    </div>
+</section>
+
+<section class="panel accent">
+    <h2>AI payslip summary</h2>
+    <p class="metric">{{ ai.headline }}</p>
+    <div class="grid">
+        <div class="card">
+            <h3>Highlights</h3>
+            <ul class="hero-list">
+                {% for item in ai.insights %}
+                    <li>{{ item }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="card">
+            <h3>Warnings</h3>
+            {% if ai.warnings %}
+                <ul class="hero-list">
+                    {% for item in ai.warnings %}
+                        <li>{{ item }}</li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p class="muted">No warnings for this payslip.</p>
+            {% endif %}
+        </div>
+    </div>
+</section>
+{% endblock %}

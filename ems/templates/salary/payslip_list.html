@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="page-header">
+    <div>
+        <h1>Payslips</h1>
+        <p>AI summaries highlight attendance-based deductions.</p>
+    </div>
+</section>
+
+<div class="table-wrap">
+    <table class="data-table">
+        <thead>
+            <tr>
+                {% if user.is_hr or user.is_manager %}<th>Employee</th>{% endif %}
+                <th>Month</th>
+                <th>Base</th>
+                <th>Final</th>
+                <th>Deductions</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for record in records %}
+                <tr>
+                    {% if user.is_hr or user.is_manager %}<td>{{ record.employee.get_full_name|default:record.employee.username }}</td>{% endif %}
+                    <td>{{ record.month }}</td>
+                    <td>{{ record.base_salary }}</td>
+                    <td>{{ record.final_salary }}</td>
+                    <td>{{ record.absent_days }} absent / {{ record.late_days }} late</td>
+                    <td class="actions"><a href="{% url 'payslip_detail' record.pk %}">View</a></td>
+                </tr>
+            {% empty %}
+                <tr>
+                    {% if user.is_hr or user.is_manager %}
+                        <td colspan="6">No payslips yet.</td>
+                    {% else %}
+                        <td colspan="5">No payslips yet.</td>
+                    {% endif %}
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

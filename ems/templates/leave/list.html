@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="page-header">
+    <div>
+        <h1>Leave requests</h1>
+        <p>Track approvals and upcoming time away.</p>
+    </div>
+    {% if not user.is_hr and not user.is_manager %}
+        <a class="primary" href="{% url 'leave_request' %}">Request leave</a>
+    {% endif %}
+</section>
+
+<div class="table-wrap">
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>Employee</th>
+                <th>Dates</th>
+                <th>Status</th>
+                <th>AI suggestion</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for leave in leaves %}
+                <tr>
+                    <td>{{ leave.employee.get_full_name|default:leave.employee.username }}</td>
+                    <td>{{ leave.start_date }} - {{ leave.end_date }}</td>
+                    <td>{{ leave.get_status_display }}</td>
+                    <td>{{ leave.recommended_action|default:"-" }}</td>
+                    <td class="actions">
+                        {% if user.is_hr or user.is_manager %}
+                            <a href="{% url 'leave_approve' leave.pk %}">Review</a>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="5">No leave requests yet.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

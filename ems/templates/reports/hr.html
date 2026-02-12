@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="page-header">
+    <div>
+        <h1>HR reports</h1>
+        <p>AI-backed signals across attendance, leave, and salary health.</p>
+    </div>
+    <div class="pill-row">
+        <span class="pill">Pending leave: {{ pending_leaves }}</span>
+        <span class="pill">Salary anomalies: {{ salary_anomalies }}</span>
+    </div>
+</section>
+
+<div class="table-wrap">
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>Employee</th>
+                <th>Attendance signal</th>
+                <th>Leave balance</th>
+                <th>Open tasks</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in report_rows %}
+                <tr>
+                    <td>{{ row.employee.get_full_name|default:row.employee.username }}</td>
+                    <td>{{ row.attendance_flag }}</td>
+                    <td>{{ row.leave_balance }}</td>
+                    <td>{{ row.open_tasks }}</td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="4">No employees to report yet.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

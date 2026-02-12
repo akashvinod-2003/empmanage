@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="page-header">
+    <div>
+        <h1>Employees</h1>
+        <p>Manage people, roles, and leave balances.</p>
+    </div>
+    <a class="primary" href="{% url 'employee_add' %}">Add employee</a>
+</section>
+
+<div class="table-wrap">
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Role</th>
+                <th>Department</th>
+                <th>Leave balance</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for employee in employees %}
+                <tr>
+                    <td>{{ employee.get_full_name|default:employee.username }}</td>
+                    <td>{{ employee.get_role_display }}</td>
+                    <td>{{ employee.department|default:"-" }}</td>
+                    <td>{{ employee.leave_balance }}</td>
+                    <td class="actions">
+                        <a href="{% url 'employee_edit' employee.pk %}">Edit</a>
+                        <a href="{% url 'employee_delete' employee.pk %}" class="danger">Delete</a>
+                    </td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="5">No employees yet.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

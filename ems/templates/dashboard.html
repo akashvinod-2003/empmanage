@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="page-header">
+    <div>
+        <h1>Dashboard</h1>
+        <p>Real-time snapshot for {{ user.get_role_display }} operations.</p>
+    </div>
+    {% if user.is_hr %}
+        <a class="primary" href="{% url 'employee_add' %}">Add employee</a>
+    {% elif user.is_manager %}
+        <a class="primary" href="{% url 'task_add' %}">Assign task</a>
+    {% else %}
+        <a class="primary" href="{% url 'leave_request' %}">Request leave</a>
+    {% endif %}
+</section>
+
+<div class="grid">
+    <div class="card">
+        <h3>Leave queue</h3>
+        <p class="metric">{{ pending_leave_count }}</p>
+        <p class="muted">Requests waiting for action.</p>
+    </div>
+    <div class="card">
+        <h3>Tasks</h3>
+        <p class="metric">{{ task_count }}</p>
+        <p class="muted">Active assignments in motion.</p>
+    </div>
+    {% if attendance_flag %}
+    <div class="card">
+        <h3>Attendance signal</h3>
+        <p class="metric">{{ attendance_flag }}</p>
+        <p class="muted">AI pattern label for your trend.</p>
+    </div>
+    {% endif %}
+    {% if user.is_hr %}
+    <div class="card">
+        <h3>Salary alerts</h3>
+        <p class="metric">{{ salary_alerts }}</p>
+        <p class="muted">Changes above 30% month over month.</p>
+    </div>
+    {% endif %}
+</div>
+
+<section class="panel accent">
+    <h2>Quick actions</h2>
+    <div class="pill-row">
+        {% if user.is_hr %}
+            <a href="{% url 'attendance_add' %}" class="pill">Mark attendance</a>
+        {% elif user.is_manager %}
+            <a href="{% url 'attendance_add' %}" class="pill">Mark attendance</a>
+        {% endif %}
+        <a href="{% url 'leave_request' %}" class="pill">New leave</a>
+        <a href="{% url 'task_list' %}" class="pill">View tasks</a>
+        {% if user.is_hr or user.is_manager %}
+            <a href="{% url 'reports' %}" class="pill">Open HR report</a>
+            <a href="{% url 'salary_add' %}" class="pill">Create salary</a>
+        {% else %}
+            <a href="{% url 'payslip_list' %}" class="pill">View payslips</a>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

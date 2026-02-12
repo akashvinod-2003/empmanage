@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="page-header">
+    <div>
+        <h1>Leave review</h1>
+        <p>{{ leave.employee.get_full_name|default:leave.employee.username }} requests {{ leave.total_days }} day(s).</p>
+    </div>
+    <a class="ghost" href="{% url 'leave_list' %}">Back</a>
+</section>
+
+<div class="card panel">
+    <p><strong>Dates:</strong> {{ leave.start_date }} to {{ leave.end_date }}</p>
+    <p><strong>Reason:</strong> {{ leave.reason }}</p>
+    <p><strong>AI suggestion:</strong> {{ leave.recommended_action|default:"-" }}</p>
+
+    <form method="post" class="button-row">
+        {% csrf_token %}
+        <button type="submit" name="action" value="approve" class="primary">Approve</button>
+        <button type="submit" name="action" value="reject" class="danger">Reject</button>
+    </form>
+</div>
+{% endblock %}

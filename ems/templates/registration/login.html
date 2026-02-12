@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="hero">
+    <div class="hero-copy">
+        <h1>Command your workforce with calm precision.</h1>
+        <p>Atlas EMS turns attendance, leave, salary, and task flow into a single role-aware cockpit. The system applies simple AI rules to highlight attention points without noise.</p>
+        <ul class="hero-list">
+            <li>Attendance patterns and late trends at a glance.</li>
+            <li>Leave approvals guided by balance + team coverage.</li>
+            <li>Salary anomalies flagged before payroll day.</li>
+        </ul>
+    </div>
+    <div class="card panel">
+        <h2>Sign in</h2>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="primary">Enter workspace</button>
+        </form>
+    </div>
+</section>
+{% endblock %}

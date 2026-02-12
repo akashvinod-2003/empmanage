@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="page-header">
+    <div>
+        <h1>Performance ratings</h1>
+        <p>Monthly rating snapshots for coaching and growth.</p>
+    </div>
+</section>
+
+{% if form %}
+    <div class="card panel">
+        <h2>Add rating</h2>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="primary">Save</button>
+        </form>
+    </div>
+{% endif %}
+
+<div class="table-wrap">
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>Employee</th>
+                <th>Month</th>
+                <th>Rating</th>
+                <th>Notes</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for rating in ratings %}
+                <tr>
+                    <td>{{ rating.employee.get_full_name|default:rating.employee.username }}</td>
+                    <td>{{ rating.month }}</td>
+                    <td>{{ rating.rating }}</td>
+                    <td>{{ rating.notes|default:"-" }}</td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="4">No ratings yet.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

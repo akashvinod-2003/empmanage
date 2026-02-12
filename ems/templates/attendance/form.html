@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="page-header">
+    <div>
+        {% if is_hr %}
+            <h1>Attendance entry</h1>
+            <p>Use clear status labels for consistent reporting.</p>
+        {% elif is_manager %}
+            <h1>Mark team attendance</h1>
+            <p>Submit attendance on behalf of your department.</p>
+        {% else %}
+            <h1>Submit attendance</h1>
+            <p>HR will review and approve your entry.</p>
+        {% endif %}
+    </div>
+    <a class="ghost" href="{% url 'attendance_list' %}">Back</a>
+</section>
+
+<div class="card panel">
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="primary">{% if is_hr or is_manager %}Save{% else %}Submit{% endif %}</button>
+    </form>
+</div>
+{% endblock %}

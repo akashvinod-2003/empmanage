@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="page-header">
+    <div>
+        <h1>Attendance review</h1>
+        <p>Approve or reject the submitted attendance record.</p>
+    </div>
+    <a class="ghost" href="{% url 'attendance_list' %}">Back</a>
+</section>
+
+<div class="card panel">
+    <p><strong>Employee:</strong> {{ record.employee.get_full_name|default:record.employee.username }}</p>
+    <p><strong>Date:</strong> {{ record.date }}</p>
+    <p><strong>Status:</strong> {{ record.get_status_display }}</p>
+    <p><strong>Submitted by:</strong> {{ record.submitted_by|default:"-" }}</p>
+
+    <form method="post" class="button-row">
+        {% csrf_token %}
+        <button type="submit" name="action" value="approve" class="primary">Approve</button>
+        <button type="submit" name="action" value="reject" class="danger">Reject</button>
+    </form>
+</div>
+{% endblock %}

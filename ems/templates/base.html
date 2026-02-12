@@ -1,0 +1,63 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Atlas EMS</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'ems/app.css' %}">
+</head>
+<body>
+    <div class="backdrop"></div>
+    <header class="site-header">
+        <div class="brand">
+            <span class="brand-mark">A</span>
+            <div>
+                <div class="brand-title">Atlas EMS</div>
+                <div class="brand-subtitle">AI-enabled employee command center</div>
+            </div>
+        </div>
+        <nav class="site-nav">
+            {% if user.is_authenticated %}
+                <a href="{% url 'dashboard' %}">Dashboard</a>
+                <a href="{% url 'attendance_list' %}">Attendance</a>
+                <a href="{% url 'leave_list' %}">Leave</a>
+                <a href="{% url 'task_list' %}">Tasks</a>
+                <a href="{% url 'performance_list' %}">Performance</a>
+                <a href="{% url 'payslip_list' %}">Payslips</a>
+                {% if user.is_hr or user.is_manager %}
+                    <a href="{% url 'employee_list' %}">Employees</a>
+                    <a href="{% url 'reports' %}">Reports</a>
+                    <a href="{% url 'salary_list' %}">Salary</a>
+                {% endif %}
+                <form action="{% url 'logout' %}" method="post" class="inline-form">
+                    {% csrf_token %}
+                    <button type="submit" class="ghost">Logout</button>
+                </form>
+            {% else %}
+                <a href="{% url 'login' %}">Login</a>
+            {% endif %}
+        </nav>
+        {% if user.is_authenticated %}
+            <div class="role-chip">
+                <span>{{ user.get_role_display }}</span>
+                <small>{{ user.username }}</small>
+            </div>
+        {% endif %}
+    </header>
+
+    <main class="page">
+        {% if messages %}
+            <div class="message-stack">
+                {% for message in messages %}
+                    <div class="message {{ message.tags }}">{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+        {% block content %}{% endblock %}
+    </main>
+</body>
+</html>

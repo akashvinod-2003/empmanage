@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="page-header">
+    <div>
+        <h1>Attendance</h1>
+        <p>Capture daily presence, late arrivals, and absences.</p>
+    </div>
+    {% if user.is_hr %}
+        <a class="primary" href="{% url 'attendance_add' %}">Add record</a>
+    {% elif user.is_manager %}
+        <a class="primary" href="{% url 'attendance_add' %}">Mark attendance</a>
+    {% endif %}
+</section>
+
+<div class="table-wrap">
+    <table class="data-table">
+        <thead>
+            <tr>
+                {% if user.is_hr or user.is_manager %}<th>Employee</th>{% endif %}
+                <th>Date</th>
+                <th>Status</th>
+                <th>Review status</th>
+                {% if user.is_hr or user.is_manager %}<th></th>{% endif %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for record in records %}
+                <tr>
+                    {% if user.is_hr or user.is_manager %}<td>{{ record.employee.get_full_name|default:record.employee.username }}</td>{% endif %}
+                    <td>{{ record.date }}</td>
+                    <td>{{ record.get_status_display }}</td>
+                    <td>{{ record.get_review_status_display }}</td>
+                    {% if user.is_hr or user.is_manager %}
+                        <td class="actions">
+                            {% if record.review_status == 'PENDING' %}
+                                <a href="{% url 'attendance_review' record.pk %}">Review</a>
+                            {% endif %}
+                        </td>
+                    {% endif %}
+                </tr>
+            {% empty %}
+                <tr>
+                    {% if user.is_hr or user.is_manager %}
+                        <td colspan="5">No attendance records yet.</td>
+                    {% else %}
+                        <td colspan="4">No attendance records yet.</td>
+                    {% endif %}
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
